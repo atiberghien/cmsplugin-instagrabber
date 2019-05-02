@@ -1,0 +1,81 @@
+{% load static sekizai_tags%}
+<div class="row mb-2">
+    {% for post in posts %}
+    <div class="col-4 p-0">
+        <div class="card">
+            <a href="{{post.instagram_url}}" 
+               data-fancybox="images" 
+               data-caption="@{{post.user.username}}&nbsp;|&nbsp;<i class='far fa-heart'></i>&nbsp;{{post.likes}}&nbsp;|&nbsp;{{post.datetime.date}}<br><p class='images-caption'>{{post.caption}}<p>"
+               data-width="640" 
+               data-height="640">
+                <img src="{{post.instagram_url}}" width="320" class="card-img-top">
+            </a>
+            <div class="card-img-overlay">
+                <h6 class="card-title">@{{post.user.username}} 
+                    <span class="likes"><i class="far fa-heart"></i>{{post.likes}}</span></span>
+                </h6>
+                <p class="card-text images-date">{{post.datetime.date}}</p>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% addtoblock "css" %}
+<style>
+    .card {
+        border: none;
+        border-radius: 0;
+        cursor: pointer;
+    }
+
+    .card-img-top {
+        object-fit: cover;
+        max-height: 320px;
+    }
+
+    .card-img-overlay {
+        height: 5em;
+        background: rgba(0, 0, 0, 0.6);
+        color: white !important;
+        font-weight: bold;
+    }
+
+    .card-title {
+        color: white !important;
+        font-weight: bold;
+    }
+
+    .card-title .likes {
+        float: right;
+    }
+
+    .card-title .likes .far {
+        margin-right: 0.5em;
+    }
+
+    p.card-text.images-date {
+        color: white !important;
+        font-weight: bold;
+    }
+    .fancybox-caption {
+        width: 50%;
+        margin: auto;
+        background: inherit!important;
+        color: white !important;
+        font-weight: bold;
+        font-family: "Roboto", sans-serif;
+    }
+    p.images-caption {
+        white-space: normal;
+    }
+</style>
+<link rel="stylesheet" href="{% static '@fancyapps/fancybox/dist/jquery.fancybox.min.css' %}">
+{% endaddtoblock %}
+{% addtoblock "js" %}
+<script src="{% static '@fancyapps/fancybox/dist/jquery.fancybox.min.js' %}"></script>
+<script>
+$(document).ready(function(){
+
+});
+</script>
+{% endaddtoblock %}
