@@ -13,7 +13,7 @@ from datetime import datetime
 from bs4 import BeautifulSoup
 from instagram_scraper.app import InstagramScraper
 
-from instagrabber.models import InstaPicture, InstaUser
+from instagrabber.models import InstaConfig, InstaPicture, InstaUser
 
 
 class Command(BaseCommand):
@@ -21,10 +21,11 @@ class Command(BaseCommand):
 
     
     def handle(self, *args, **options):
+        config = InstaConfig.objects.first()
         params = {
-            'login_user': settings.INSTAGRAM_LOGIN, 
-            'login_pass': settings.INSTAGRAM_PWD,  
-            'usernames': settings.INSTAGRAM_SEARCH_TERMS,  
+            'login_user': config.username, 
+            'login_pass': config.password,  
+            'usernames': config.search_terms.split(','),  
             'destination': '/tmp/instagram/usernames',
             'media_types': ['none'], 
             'include_location': True, 

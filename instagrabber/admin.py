@@ -4,7 +4,28 @@ from __future__ import unicode_literals
 from django.contrib import admin
 from django import forms
 from django.utils.safestring import mark_safe
-from .models import InstaUser, InstaPicture
+from .models import InstaUser, InstaPicture, InstaConfig
+
+class SingletonModelAdmin(admin.ModelAdmin):
+    actions = None 
+
+    def has_delete_permission(self, request, obj=None):
+        return False
+
+    def has_add_permission(self, request):
+        return InstaConfig.objects.count() == 0
+
+class InstaConfigForm(forms.ModelForm):
+    class Meta:
+        model = InstaConfig
+        fields = "__all__"
+        widgets = {
+            'password': forms.PasswordInput(),
+        }
+
+@admin.register(InstaConfig)
+class InstaConfigAdmin(SingletonModelAdmin):
+    form = InstaConfigForm
 
 @admin.register(InstaUser)
 class InstaUserAdmin(admin.ModelAdmin):
