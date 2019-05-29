@@ -57,6 +57,7 @@ class Command(BaseCommand):
                     else:
                         images.extend(data["GraphImages"])
         
+        new_pictures = 0
         for img in images:
 
             params = {
@@ -68,7 +69,6 @@ class Command(BaseCommand):
             try :
                 params["caption"] = img["edge_media_to_caption"]["edges"][0]["node"]["text"]
             except Exception, e:
-                print e
                 pass
 
             try:
@@ -86,6 +86,7 @@ class Command(BaseCommand):
 
             if not InstaPicture.objects.filter(instagram_id=img["id"]).exists():
                 InstaPicture.objects.create(**params)
+                new_pictures += 1
             
             pic = InstaPicture.objects.get(instagram_id=img["id"])
                 
@@ -97,3 +98,15 @@ class Command(BaseCommand):
                 pic.save()
             except Exception, e:
                 print 'https://www.instagram.com/p/%s/' % img["shortcode"]
+
+        if config.notif_email and new_pictures > 0:
+            from django.core.mail import send_mail
+            from django.contrib.sites.models import Site
+            
+            send_mail(
+                '%s Social Wall' % Site.objects.get(pk=1).name,
+                '%s post(s) sont soumis à modération' % new_pictures,
+                settings.DEFAULT_FROM_EMAIL,
+                [config.notif_email],
+                fail_silently=True,
+            )
