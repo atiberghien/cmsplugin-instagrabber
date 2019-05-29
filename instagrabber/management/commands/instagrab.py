@@ -83,21 +83,23 @@ class Command(BaseCommand):
                     user_id=img["owner"]["id"],
                     username=json.loads(stringified_json)['entry_data']['PostPage'][0]['graphql']['shortcode_media']['owner']['username'])
                 
-
-            if not InstaPicture.objects.filter(instagram_id=img["id"]).exists():
-                InstaPicture.objects.create(**params)
-                new_pictures += 1
-            
-            pic = InstaPicture.objects.get(instagram_id=img["id"])
+            if params["user"].username in config.backlist.replace(' ','').split(','):
+                params["user"].delete()
+            else:
+                if not InstaPicture.objects.filter(instagram_id=img["id"]).exists():
+                    InstaPicture.objects.create(**params)
+                    new_pictures += 1
                 
-            if 'tags' in img and img["tags"]:
-                pic.tags.add(*img["tags"])
-            
-            try:
-                pic.likes = img["edge_media_preview_like"]["count"]
-                pic.save()
-            except Exception, e:
-                print 'https://www.instagram.com/p/%s/' % img["shortcode"]
+                pic = InstaPicture.objects.get(instagram_id=img["id"])
+                    
+                if 'tags' in img and img["tags"]:
+                    pic.tags.add(*img["tags"])
+                
+                try:
+                    pic.likes = img["edge_media_preview_like"]["count"]
+                    pic.save()
+                except Exception, e:
+                    print 'https://www.instagram.com/p/%s/' % img["shortcode"]
 
         if config.notif_email and new_pictures > 0:
             from django.core.mail import send_mail
