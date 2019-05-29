@@ -90,7 +90,7 @@ class Command(BaseCommand):
             
             pic = InstaPicture.objects.get(instagram_id=img["id"])
                 
-            if img["tags"]:
+            if 'tags' in img and img["tags"]:
                 pic.tags.add(*img["tags"])
             
             try:
