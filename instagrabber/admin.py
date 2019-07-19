@@ -51,6 +51,10 @@ class InstaPictureForm(forms.ModelForm):
 
 @admin.register(InstaPicture)
 class InstaPictureAdmin(admin.ModelAdmin):
+    
+    def has_add_permission(self, request, obj=None):
+        return False
+
     list_display = ('id',   'image_img', 'selected', 'likes', 'user','datetime' )
     list_editable = ('selected', )
     form = InstaPictureForm
