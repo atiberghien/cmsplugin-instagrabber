@@ -23,8 +23,8 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         config = InstaConfig.objects.first()
+        tmp_dir = "/tmp/instagram"
         
-        tmp_dir = "/home/alban/Code/agapes/insta"
 
         looter_cfg = StringIO.StringIO()
         looter_cfg.write("[INSTAGRABBER]\n")
