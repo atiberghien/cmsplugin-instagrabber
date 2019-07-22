@@ -33,8 +33,11 @@ class SingletonModel(models.Model):
 
 
 class InstaConfig(SingletonModel):
-    search_terms = models.CharField(max_length=500, default='instagram', help_text="Termes séparés par une virgule, pas de # ni de @.")
-    backlist = models.CharField(max_length=500, null=True, blank=True, help_text="Usernames séparés par une virgule, sans le @.")
+    
+    search_accounts = models.CharField(max_length=500, default='instagram', help_text="Comptes séparés par une virgule sans le @.")
+    search_hashtags = models.CharField(max_length=500, default='instagram', help_text="Hashtags séparés par une virgule sans le #.")
+    
+    backlist = models.CharField(max_length=500, null=True, blank=True, help_text="Comptes séparés par une virgule, sans le @.")
     notif_email = models.EmailField(null=True, blank=True)
 
     def __unicode__(self):

@@ -22,10 +22,13 @@ class Command(BaseCommand):
     
     def handle(self, *args, **options):
         config = InstaConfig.objects.first()
+
+        search_terms = set(config.search_accounts.split(',') + config.search_hashtags.split(','))
+
         params = {
-            'usernames': config.search_terms.split(','),  
             'login_user': settings.INSTAGRAM_LOGIN, 
             'login_pass': settings.INSTAGRAM_PWD,  
+            'usernames': search_terms,  
             'destination': '/tmp/instagram/usernames',
             'media_types': ['none'], 
             'include_location': True, 
@@ -39,6 +42,7 @@ class Command(BaseCommand):
         scraper.save_cookies()
 
         params.update({
+            'usernames': search_terms,
             'destination': '/tmp/instagram/tags',
             'tag': True, 
         })
