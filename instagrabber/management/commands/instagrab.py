@@ -23,9 +23,9 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         config = InstaConfig.objects.first()
         params = {
-            'login_user': config.username, 
-            'login_pass': config.password,  
             'usernames': config.search_terms.split(','),  
+            'login_user': settings.INSTAGRAM_LOGIN, 
+            'login_pass': settings.INSTAGRAM_PWD,  
             'destination': '/tmp/instagram/usernames',
             'media_types': ['none'], 
             'include_location': True, 

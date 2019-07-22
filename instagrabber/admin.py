@@ -15,17 +15,10 @@ class SingletonModelAdmin(admin.ModelAdmin):
     def has_add_permission(self, request):
         return InstaConfig.objects.count() == 0
 
-class InstaConfigForm(forms.ModelForm):
-    class Meta:
-        model = InstaConfig
-        fields = "__all__"
-        widgets = {
-            'password': forms.PasswordInput(),
-        }
 
 @admin.register(InstaConfig)
 class InstaConfigAdmin(SingletonModelAdmin):
-    form = InstaConfigForm
+    pass
 
 @admin.register(InstaUser)
 class InstaUserAdmin(admin.ModelAdmin):
