@@ -28,8 +28,8 @@ class Command(BaseCommand):
 
         looter_cfg = StringIO.StringIO()
         looter_cfg.write("[INSTAGRABBER]\n")
-        looter_cfg.write("username = %s\n" % settings.INSTAGRAM_LOGIN)
-        looter_cfg.write("password = %s\n" % settings.INSTAGRAM_PWD)
+        # looter_cfg.write("username = %s\n" % settings.INSTAGRAM_LOGIN)
+        # looter_cfg.write("password = %s\n" % settings.INSTAGRAM_PWD)
         looter_cfg.write("dump-only = true\n")
         looter_cfg.write("extended-dump = true\n")  
         looter_cfg.write("quiet = true\n")  
