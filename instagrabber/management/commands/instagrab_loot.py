@@ -81,7 +81,10 @@ class Command(BaseCommand):
                         new_pictures += 1
                     
                     pic = InstaPicture.objects.get(instagram_id=img["id"])
-                    
+                    if img["thumbnail_src"] != pic.instagram_url:
+                        #because the image cache ttl expired
+                        pic.instagram_url = img["thumbnail_src"]
+                        pic.save()
                     try:
                         pic.likes = img["edge_liked_by"]["count"]
                         pic.save()
