@@ -15,7 +15,7 @@ from bs4 import BeautifulSoup
 from instalooter.batch import BatchRunner
 
 from instagrabber.models import InstaConfig, InstaPicture, InstaUser
-import StringIO
+from io import StringIO
 import shutil
 
 class Command(BaseCommand):
@@ -26,7 +26,7 @@ class Command(BaseCommand):
         tmp_dir = "/tmp/instagram"
         
 
-        looter_cfg = StringIO.StringIO()
+        looter_cfg = StringIO()
         looter_cfg.write("[INSTAGRABBER]\n")
         # looter_cfg.write("username = %s\n" % settings.INSTAGRAM_LOGIN)
         # looter_cfg.write("password = %s\n" % settings.INSTAGRAM_PWD)

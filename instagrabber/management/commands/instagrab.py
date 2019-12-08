@@ -103,7 +103,7 @@ class Command(BaseCommand):
                     pic.likes = img["edge_media_preview_like"]["count"]
                     pic.save()
                 except Exception, e:
-                    print 'https://www.instagram.com/p/%s/' % img["shortcode"]
+                    print('https://www.instagram.com/p/%s/' % img["shortcode"])
 
         if config.notif_email and new_pictures > 0:
             from django.core.mail import send_mail
