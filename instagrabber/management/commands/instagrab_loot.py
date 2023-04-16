@@ -18,6 +18,7 @@ from instagrabber.models import InstaConfig, InstaPicture, InstaUser
 from io import StringIO
 import shutil
 
+
 class Command(BaseCommand):
 
 
@@ -51,9 +52,9 @@ class Command(BaseCommand):
         for img in images:
             if img["__typename"] == "GraphImage":
                 params = {
-                    "instagram_id" : img["id"],
-                    "instagram_url" : img["thumbnail_src"],
-                    "datetime" : datetime.utcfromtimestamp(img["taken_at_timestamp"]),
+                    "instagram_id": img["id"],
+                    "instagram_url": img["thumbnail_src"],
+                    "datetime": datetime.utcfromtimestamp(img["taken_at_timestamp"]),
                 }
                 
                 try :
@@ -65,15 +66,25 @@ class Command(BaseCommand):
                     params["user"] = InstaUser.objects.get(user_id=img["owner"]["id"])
                 except InstaUser.DoesNotExist:
                     ## FROM https://stackoverflow.com/a/53680672
-                    r = requests.get('https://www.instagram.com/p/%s/' % img["shortcode"])
+                    headers = {
+                        'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:87.0) Gecko/20100101 Firefox/87.0',
+                        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+                        'Accept-Language': 'en-US,en;q=0.5',
+                        'Connection': 'keep-alive',
+                        'Upgrade-Insecure-Requests': '1',
+                        'Pragma': 'no-cache',
+                        'Cache-Control': 'no-cache',
+                    }
+                    r = requests.get('https://www.instagram.com/p/%s/' % img["shortcode"], headers=headers)
+
                     soup = BeautifulSoup(r.content, "lxml")
-                    scripts = soup.find_all('script', type="text/javascript", text=re.compile('window._sharedData'))
-                    stringified_json = scripts[0].get_text().replace('window._sharedData = ', '')[:-1]
+                    scripts = soup.find('script', type="text/javascript", text=re.compile("window._sharedData"))
+                    stringified_json = scripts.contents[0].replace('window._sharedData = ', '')[:-1]
+                    
                     params["user"] = InstaUser.objects.create(
                         user_id=img["owner"]["id"],
                         username=json.loads(stringified_json)['entry_data']['PostPage'][0]['graphql']['shortcode_media']['owner']['username'])
-                    
-                if params["user"].username in config.backlist.replace(' ','').split(','):
+                if params["user"].username in config.backlist.replace(' ', '').split(','):
                     params["user"].delete()
                 else:
                     if not InstaPicture.objects.filter(instagram_id=img["id"]).exists():
@@ -95,14 +106,14 @@ class Command(BaseCommand):
             for filename in fnmatch.filter(filenames, '*.json'):
                 os.remove(os.path.join(root, filename))
         
-        if config.notif_email and new_pictures > 0:
-            from django.core.mail import send_mail
-            from django.contrib.sites.models import Site
+        # if config.notif_email and new_pictures > 0:
+        #     from django.core.mail import send_mail
+        #     from django.contrib.sites.models import Site
             
-            send_mail(
-                '%s Social Wall' % Site.objects.get(pk=1).name,
-                '%s post(s) sont soumis à modération' % new_pictures,
-                settings.DEFAULT_FROM_EMAIL,
-                [config.notif_email],
-                fail_silently=True,
-            )
+        #     send_mail(
+        #         '%s Social Wall' % Site.objects.get(pk=1).name,
+        #         '%s post(s) sont soumis à modération' % new_pictures,
+        #         settings.DEFAULT_FROM_EMAIL,
+        #         [config.notif_email],
+        #         fail_silently=True,
+        #     )
